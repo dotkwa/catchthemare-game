@@ -727,8 +727,8 @@ board model =
 marecounter : Model -> Html Msg
 marecounter model =
   div [class "marecounter"] [
-    div [class "text"] [text (String.concat ["Mares Captured: ", String.fromInt model.mareCaptureCount])],
-    div [class "text"] [text (String.concat ["Mares Lost: ", String.fromInt model.mareLossCount])]
+    div [class "counter"] [text (String.concat ["Mares Captured: ", String.fromInt model.mareCaptureCount])],
+    div [class "counter"] [text (String.concat ["Mares Lost: ", String.fromInt model.mareLossCount])]
   ]
 
 view : Model -> Html Msg

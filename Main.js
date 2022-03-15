@@ -7245,7 +7245,7 @@ var $author$project$Main$marecounter = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('text')
+						$elm$html$Html$Attributes$class('counter')
 					]),
 				_List_fromArray(
 					[
@@ -7261,7 +7261,7 @@ var $author$project$Main$marecounter = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('text')
+						$elm$html$Html$Attributes$class('counter')
 					]),
 				_List_fromArray(
 					[

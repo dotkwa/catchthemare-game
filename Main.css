@@ -75,6 +75,10 @@
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding-top:15px;
   }
+  .counter {
+    font-size: 20px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
   .msgboximg {
     width:300px;
     height:300px;
@@ -98,6 +102,5 @@
   }
   .marecounter {
     width: 200px;
-    padding: 0 10px 10px;
     float: right;
   }
