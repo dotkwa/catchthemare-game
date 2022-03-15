@@ -290,6 +290,8 @@ type alias Model =
     , msgBoxLossContent : String
     , msgBoxWinImageContent : String
     , mareName : String
+    , mareCaptureCount : Int
+    , mareLossCount : Int
     , msgBoxWinText : String
   } 
 
@@ -522,6 +524,8 @@ startModel =
     msgBoxLossContent = Data.anonThatsKindOfSad,
     msgBoxWinImageContent = Data.lyrahappy,
     mareName = "",
+    mareCaptureCount = 0,
+    mareLossCount = 0,
     msgBoxWinText = ""
   }
 
@@ -563,6 +567,8 @@ type Msg =
   | SetMareName String
   | SetMessageBoxWinText String
   | SetMareCombined ((String,String),(String,String))
+  | IncreaseMareCaptureCount
+  | IncreaseMareLossCount
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -601,7 +607,7 @@ update msg model =
         chooseMareCombined =
           Random.generate SetMareCombined chooseMare
       in
-        (startModel, Cmd.batch [blockRandomFieldsCmd, choseLossImgCmd, chooseMareCombined])
+        ({startModel | mareCaptureCount = model.mareCaptureCount, mareLossCount = model.mareLossCount}, Cmd.batch [blockRandomFieldsCmd, choseLossImgCmd, chooseMareCombined])
     BlockManyFields idxs ->
       List.foldl (\idx (m,_) -> update (BlockField idx) m) (model,Cmd.none) idxs
     StepPiece -> 
@@ -613,15 +619,17 @@ update msg model =
             (m1,c1) = update (SetGameOnHold True) model
             (m2,c2) = update (SetMsgBoxText ("Oh no!","The mare got away.")) m1
             (m3,c3) = update (SetMsgBoxImageContent model.msgBoxLossContent) m2
+            (m4,c4) = update (IncreaseMareLossCount) m3
         in
-        (m3, Cmd.batch [c1,c2,c3])
+        (m4, Cmd.batch [c1,c2,c3,c4])
       IntoBlock -> --victory condition
         let
             (m1,c1) = update (SetGameOnHold True) model
             (m2,c2) = update (SetMsgBoxText (String.concat ["Success! You caught ",model.mareName,"!"],model.msgBoxWinText)) m1
             (m3,c3) = update (SetMsgBoxImageContent model.msgBoxWinImageContent) m2
+            (m4,c4) = update (IncreaseMareCaptureCount) m3
         in
-        (m3, Cmd.batch [c1,c2,c3])
+        (m4, Cmd.batch [c1,c2,c3,c4])
       FreeField newIdx -> 
         ({model | lastPiecePosition=model.piecePosition, piecePosition=newIdx},Cmd.none)
     SetGameOnHold hold -> 
@@ -648,6 +656,10 @@ update msg model =
         (m4,c4) = update (SetMessageBoxWinText winText) m3
       in
         (m4, Cmd.batch [c1,c2,c3,c4]) -- how the fuck to compose many updates
+    IncreaseMareCaptureCount ->
+      ({model | mareCaptureCount = model.mareCaptureCount + 1},Cmd.none)
+    IncreaseMareLossCount ->
+      ({model | mareLossCount = model.mareLossCount + 1},Cmd.none)
 
 dialogbox : Model -> Html Msg
 dialogbox model =
@@ -712,10 +724,18 @@ board model =
       )
   ) 
 
+marecounter : Model -> Html Msg
+marecounter model =
+  div [class "marecounter"] [
+    div [class "text"] [text (String.concat ["Mares Captured: ", String.fromInt model.mareCaptureCount])],
+    div [class "text"] [text (String.concat ["Mares Lost: ", String.fromInt model.mareLossCount])]
+  ]
+
 view : Model -> Html Msg
 view model =
   div [] [ 
     button [onClick (ResetBoard), class "button"] [text "Reroll"]
+    , marecounter model
     , br [] []
     , div [] [
       dialogbox model,

@@ -11,7 +11,7 @@
     background-color:white;
     float:left;
     padding:40px;
-    min-width:900px;
+    min-width:715px;
   }
   
   .row-even {
@@ -95,4 +95,9 @@
   }
   .pieceimg-faceleft {
     transform:scale(0.56) scaleX(-1);
+  }
+  .marecounter {
+    width: 200px;
+    padding: 0 10px 10px;
+    float: right;
   }
