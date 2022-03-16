@@ -569,6 +569,7 @@ type Msg =
   | SetMareCombined ((String,String),(String,String))
   | IncreaseMareCaptureCount
   | IncreaseMareLossCount
+  | RerollBoard
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -619,7 +620,7 @@ update msg model =
             (m1,c1) = update (SetGameOnHold True) model
             (m2,c2) = update (SetMsgBoxText ("Oh no!","The mare got away.")) m1
             (m3,c3) = update (SetMsgBoxImageContent model.msgBoxLossContent) m2
-            (m4,c4) = update (IncreaseMareLossCount) m3
+            (m4,c4) = update IncreaseMareLossCount m3
         in
         (m4, Cmd.batch [c1,c2,c3,c4])
       IntoBlock -> --victory condition
@@ -627,7 +628,7 @@ update msg model =
             (m1,c1) = update (SetGameOnHold True) model
             (m2,c2) = update (SetMsgBoxText (String.concat ["Success! You caught ",model.mareName,"!"],model.msgBoxWinText)) m1
             (m3,c3) = update (SetMsgBoxImageContent model.msgBoxWinImageContent) m2
-            (m4,c4) = update (IncreaseMareCaptureCount) m3
+            (m4,c4) = update IncreaseMareCaptureCount m3
         in
         (m4, Cmd.batch [c1,c2,c3,c4])
       FreeField newIdx -> 
@@ -660,6 +661,15 @@ update msg model =
       ({model | mareCaptureCount = model.mareCaptureCount + 1},Cmd.none)
     IncreaseMareLossCount ->
       ({model | mareLossCount = model.mareLossCount + 1},Cmd.none)
+    RerollBoard ->
+      if model.gameOnHold == False then
+        let
+          (m1,c1) = update ResetBoard model
+          (m2,c2) = update IncreaseMareLossCount m1
+        in
+          (m2, Cmd.batch [c1,c2])
+      else
+        update ResetBoard model
 
 dialogbox : Model -> Html Msg
 dialogbox model =
@@ -734,7 +744,7 @@ marecounter model =
 view : Model -> Html Msg
 view model =
   div [] [ 
-    button [onClick (ResetBoard), class "button"] [text "Reroll"]
+    button [onClick (RerollBoard), class "button"] [text "Reroll"]
     , marecounter model
     , br [] []
     , div [] [

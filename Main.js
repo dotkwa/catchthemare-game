@@ -6756,295 +6756,318 @@ var $author$project$Main$tryMovePiece = function (model) {
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		switch (msg.$) {
-			case 'BlockField':
-				var idx = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							board: A3($elm$core$Dict$insert, idx, $author$project$Main$Blocked, model.board)
-						}),
-					$elm$core$Platform$Cmd$none);
-			case 'Clicked':
-				var idx = msg.a;
-				var _v1 = A2($author$project$Main$getFieldState, model, idx);
-				if (_v1.$ === 'Empty') {
-					var _v2 = A2(
-						$author$project$Main$update,
-						$author$project$Main$BlockField(idx),
-						model);
-					var m1 = _v2.a;
-					var c1 = _v2.b;
-					var _v3 = A2($author$project$Main$update, $author$project$Main$StepPiece, m1);
-					var m2 = _v3.a;
-					var c2 = _v3.b;
+		update:
+		while (true) {
+			switch (msg.$) {
+				case 'BlockField':
+					var idx = msg.a;
 					return _Utils_Tuple2(
-						m2,
+						_Utils_update(
+							model,
+							{
+								board: A3($elm$core$Dict$insert, idx, $author$project$Main$Blocked, model.board)
+							}),
+						$elm$core$Platform$Cmd$none);
+				case 'Clicked':
+					var idx = msg.a;
+					var _v1 = A2($author$project$Main$getFieldState, model, idx);
+					if (_v1.$ === 'Empty') {
+						var _v2 = A2(
+							$author$project$Main$update,
+							$author$project$Main$BlockField(idx),
+							model);
+						var m1 = _v2.a;
+						var c1 = _v2.b;
+						var _v3 = A2($author$project$Main$update, $author$project$Main$StepPiece, m1);
+						var m2 = _v3.a;
+						var c2 = _v3.b;
+						return _Utils_Tuple2(
+							m2,
+							$elm$core$Platform$Cmd$batch(
+								_List_fromArray(
+									[c1, c2])));
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				case 'ResetBoard':
+					var choseLossImgCmd = A2(
+						$elm$random$Random$generate,
+						$author$project$Main$SetMsgBoxLossContent,
+						A2(
+							$elm$random$Random$map,
+							function (_v8) {
+								var m = _v8.a;
+								return A2($elm$core$Maybe$withDefault, $author$project$Data$anonThatsKindOfSad, m);
+							},
+							$elm_community$random_extra$Random$List$choose($author$project$Main$msgBoxLossContents)));
+					var chooseMare = A2(
+						$elm$random$Random$andThen,
+						function (_v4) {
+							var m = _v4.a;
+							var mm = A2($elm$core$Maybe$withDefault, $author$project$Main$lyra, m);
+							var msgsRnd = A2(
+								$elm$random$Random$map,
+								function (_v7) {
+									var e = _v7.a;
+									return A2($elm$core$Maybe$withDefault, '', e);
+								},
+								$elm_community$random_extra$Random$List$choose(
+									$elm$core$List$concat(
+										_List_fromArray(
+											[mm.rewardMsgTexts, $author$project$Main$genericRewardMsgTexts]))));
+							return A2(
+								$elm$random$Random$andThen,
+								function (winMsg) {
+									return A2(
+										$elm$random$Random$andThen,
+										function (_v5) {
+											var marename = _v5.a;
+											return A2(
+												$elm$random$Random$map,
+												function (_v6) {
+													var marewinimgdata = _v6.a;
+													return _Utils_Tuple2(
+														_Utils_Tuple2(
+															A2($elm$core$Maybe$withDefault, '', marename),
+															mm.pieceImgData),
+														_Utils_Tuple2(
+															A2($elm$core$Maybe$withDefault, '', marewinimgdata),
+															winMsg));
+												},
+												$elm_community$random_extra$Random$List$choose(mm.msgBoxWinImgData));
+										},
+										$elm_community$random_extra$Random$List$choose(mm.name));
+								},
+								msgsRnd);
+						},
+						$elm_community$random_extra$Random$List$choose($author$project$Main$mares));
+					var chooseMareCombined = A2($elm$random$Random$generate, $author$project$Main$SetMareCombined, chooseMare);
+					var blockRandomFieldsCmd = A2(
+						$elm$random$Random$generate,
+						$author$project$Main$BlockManyFields,
+						A2($elm$random$Random$list, $author$project$Main$initiallyBlockedFields, $author$project$Main$randomCoordExceptCenter));
+					return _Utils_Tuple2(
+						_Utils_update(
+							$author$project$Main$startModel,
+							{mareCaptureCount: model.mareCaptureCount, mareLossCount: model.mareLossCount}),
 						$elm$core$Platform$Cmd$batch(
 							_List_fromArray(
-								[c1, c2])));
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'ResetBoard':
-				var choseLossImgCmd = A2(
-					$elm$random$Random$generate,
-					$author$project$Main$SetMsgBoxLossContent,
-					A2(
-						$elm$random$Random$map,
-						function (_v8) {
-							var m = _v8.a;
-							return A2($elm$core$Maybe$withDefault, $author$project$Data$anonThatsKindOfSad, m);
-						},
-						$elm_community$random_extra$Random$List$choose($author$project$Main$msgBoxLossContents)));
-				var chooseMare = A2(
-					$elm$random$Random$andThen,
-					function (_v4) {
-						var m = _v4.a;
-						var mm = A2($elm$core$Maybe$withDefault, $author$project$Main$lyra, m);
-						var msgsRnd = A2(
-							$elm$random$Random$map,
-							function (_v7) {
-								var e = _v7.a;
-								return A2($elm$core$Maybe$withDefault, '', e);
-							},
-							$elm_community$random_extra$Random$List$choose(
-								$elm$core$List$concat(
-									_List_fromArray(
-										[mm.rewardMsgTexts, $author$project$Main$genericRewardMsgTexts]))));
-						return A2(
-							$elm$random$Random$andThen,
-							function (winMsg) {
+								[blockRandomFieldsCmd, choseLossImgCmd, chooseMareCombined])));
+				case 'BlockManyFields':
+					var idxs = msg.a;
+					return A3(
+						$elm$core$List$foldl,
+						F2(
+							function (idx, _v9) {
+								var m = _v9.a;
 								return A2(
-									$elm$random$Random$andThen,
-									function (_v5) {
-										var marename = _v5.a;
-										return A2(
-											$elm$random$Random$map,
-											function (_v6) {
-												var marewinimgdata = _v6.a;
-												return _Utils_Tuple2(
-													_Utils_Tuple2(
-														A2($elm$core$Maybe$withDefault, '', marename),
-														mm.pieceImgData),
-													_Utils_Tuple2(
-														A2($elm$core$Maybe$withDefault, '', marewinimgdata),
-														winMsg));
-											},
-											$elm_community$random_extra$Random$List$choose(mm.msgBoxWinImgData));
-									},
-									$elm_community$random_extra$Random$List$choose(mm.name));
-							},
-							msgsRnd);
-					},
-					$elm_community$random_extra$Random$List$choose($author$project$Main$mares));
-				var chooseMareCombined = A2($elm$random$Random$generate, $author$project$Main$SetMareCombined, chooseMare);
-				var blockRandomFieldsCmd = A2(
-					$elm$random$Random$generate,
-					$author$project$Main$BlockManyFields,
-					A2($elm$random$Random$list, $author$project$Main$initiallyBlockedFields, $author$project$Main$randomCoordExceptCenter));
-				return _Utils_Tuple2(
-					_Utils_update(
-						$author$project$Main$startModel,
-						{mareCaptureCount: model.mareCaptureCount, mareLossCount: model.mareLossCount}),
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[blockRandomFieldsCmd, choseLossImgCmd, chooseMareCombined])));
-			case 'BlockManyFields':
-				var idxs = msg.a;
-				return A3(
-					$elm$core$List$foldl,
-					F2(
-						function (idx, _v9) {
-							var m = _v9.a;
-							return A2(
+									$author$project$Main$update,
+									$author$project$Main$BlockField(idx),
+									m);
+							}),
+						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none),
+						idxs);
+				case 'StepPiece':
+					return $author$project$Main$tryMovePiece(model);
+				case 'PieceTriedStep':
+					var step = msg.a;
+					switch (step.$) {
+						case 'Outside':
+							var _v11 = A2(
 								$author$project$Main$update,
-								$author$project$Main$BlockField(idx),
-								m);
-						}),
-					_Utils_Tuple2(model, $elm$core$Platform$Cmd$none),
-					idxs);
-			case 'StepPiece':
-				return $author$project$Main$tryMovePiece(model);
-			case 'PieceTriedStep':
-				var step = msg.a;
-				switch (step.$) {
-					case 'Outside':
-						var _v11 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetGameOnHold(true),
-							model);
-						var m1 = _v11.a;
-						var c1 = _v11.b;
-						var _v12 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetMsgBoxText(
-								_Utils_Tuple2('Oh no!', 'The mare got away.')),
-							m1);
-						var m2 = _v12.a;
-						var c2 = _v12.b;
-						var _v13 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetMsgBoxImageContent(model.msgBoxLossContent),
-							m2);
-						var m3 = _v13.a;
-						var c3 = _v13.b;
-						var _v14 = A2($author$project$Main$update, $author$project$Main$IncreaseMareLossCount, m3);
-						var m4 = _v14.a;
-						var c4 = _v14.b;
+								$author$project$Main$SetGameOnHold(true),
+								model);
+							var m1 = _v11.a;
+							var c1 = _v11.b;
+							var _v12 = A2(
+								$author$project$Main$update,
+								$author$project$Main$SetMsgBoxText(
+									_Utils_Tuple2('Oh no!', 'The mare got away.')),
+								m1);
+							var m2 = _v12.a;
+							var c2 = _v12.b;
+							var _v13 = A2(
+								$author$project$Main$update,
+								$author$project$Main$SetMsgBoxImageContent(model.msgBoxLossContent),
+								m2);
+							var m3 = _v13.a;
+							var c3 = _v13.b;
+							var _v14 = A2($author$project$Main$update, $author$project$Main$IncreaseMareLossCount, m3);
+							var m4 = _v14.a;
+							var c4 = _v14.b;
+							return _Utils_Tuple2(
+								m4,
+								$elm$core$Platform$Cmd$batch(
+									_List_fromArray(
+										[c1, c2, c3, c4])));
+						case 'IntoBlock':
+							var _v15 = A2(
+								$author$project$Main$update,
+								$author$project$Main$SetGameOnHold(true),
+								model);
+							var m1 = _v15.a;
+							var c1 = _v15.b;
+							var _v16 = A2(
+								$author$project$Main$update,
+								$author$project$Main$SetMsgBoxText(
+									_Utils_Tuple2(
+										$elm$core$String$concat(
+											_List_fromArray(
+												['Success! You caught ', model.mareName, '!'])),
+										model.msgBoxWinText)),
+								m1);
+							var m2 = _v16.a;
+							var c2 = _v16.b;
+							var _v17 = A2(
+								$author$project$Main$update,
+								$author$project$Main$SetMsgBoxImageContent(model.msgBoxWinImageContent),
+								m2);
+							var m3 = _v17.a;
+							var c3 = _v17.b;
+							var _v18 = A2($author$project$Main$update, $author$project$Main$IncreaseMareCaptureCount, m3);
+							var m4 = _v18.a;
+							var c4 = _v18.b;
+							return _Utils_Tuple2(
+								m4,
+								$elm$core$Platform$Cmd$batch(
+									_List_fromArray(
+										[c1, c2, c3, c4])));
+						default:
+							var newIdx = step.a;
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{lastPiecePosition: model.piecePosition, piecePosition: newIdx}),
+								$elm$core$Platform$Cmd$none);
+					}
+				case 'SetGameOnHold':
+					var hold = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{gameOnHold: hold}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMsgBoxText':
+					var _v19 = msg.a;
+					var l1 = _v19.a;
+					var l2 = _v19.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{msgBoxLine1: l1, msgBoxLine2: l2}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMsgBoxImageContent':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{msgBoxImageContent: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetPieceImageContent':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{pieceImageContent: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMsgBoxLossContent':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{msgBoxLossContent: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMareName':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{mareName: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMsgBoxWinContent':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{msgBoxWinImageContent: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMessageBoxWinText':
+					var c = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{msgBoxWinText: c}),
+						$elm$core$Platform$Cmd$none);
+				case 'SetMareCombined':
+					var _v20 = msg.a;
+					var _v21 = _v20.a;
+					var mare = _v21.a;
+					var piece = _v21.b;
+					var _v22 = _v20.b;
+					var winImg = _v22.a;
+					var winText = _v22.b;
+					var _v23 = A2(
+						$author$project$Main$update,
+						$author$project$Main$SetMareName(mare),
+						model);
+					var m1 = _v23.a;
+					var c1 = _v23.b;
+					var _v24 = A2(
+						$author$project$Main$update,
+						$author$project$Main$SetPieceImageContent(piece),
+						m1);
+					var m2 = _v24.a;
+					var c2 = _v24.b;
+					var _v25 = A2(
+						$author$project$Main$update,
+						$author$project$Main$SetMsgBoxWinContent(winImg),
+						m2);
+					var m3 = _v25.a;
+					var c3 = _v25.b;
+					var _v26 = A2(
+						$author$project$Main$update,
+						$author$project$Main$SetMessageBoxWinText(winText),
+						m3);
+					var m4 = _v26.a;
+					var c4 = _v26.b;
+					return _Utils_Tuple2(
+						m4,
+						$elm$core$Platform$Cmd$batch(
+							_List_fromArray(
+								[c1, c2, c3, c4])));
+				case 'IncreaseMareCaptureCount':
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{mareCaptureCount: model.mareCaptureCount + 1}),
+						$elm$core$Platform$Cmd$none);
+				case 'IncreaseMareLossCount':
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{mareLossCount: model.mareLossCount + 1}),
+						$elm$core$Platform$Cmd$none);
+				default:
+					if (!model.gameOnHold) {
+						var _v27 = A2($author$project$Main$update, $author$project$Main$ResetBoard, model);
+						var m1 = _v27.a;
+						var c1 = _v27.b;
+						var _v28 = A2($author$project$Main$update, $author$project$Main$IncreaseMareLossCount, m1);
+						var m2 = _v28.a;
+						var c2 = _v28.b;
 						return _Utils_Tuple2(
-							m4,
+							m2,
 							$elm$core$Platform$Cmd$batch(
 								_List_fromArray(
-									[c1, c2, c3, c4])));
-					case 'IntoBlock':
-						var _v15 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetGameOnHold(true),
-							model);
-						var m1 = _v15.a;
-						var c1 = _v15.b;
-						var _v16 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetMsgBoxText(
-								_Utils_Tuple2(
-									$elm$core$String$concat(
-										_List_fromArray(
-											['Success! You caught ', model.mareName, '!'])),
-									model.msgBoxWinText)),
-							m1);
-						var m2 = _v16.a;
-						var c2 = _v16.b;
-						var _v17 = A2(
-							$author$project$Main$update,
-							$author$project$Main$SetMsgBoxImageContent(model.msgBoxWinImageContent),
-							m2);
-						var m3 = _v17.a;
-						var c3 = _v17.b;
-						var _v18 = A2($author$project$Main$update, $author$project$Main$IncreaseMareCaptureCount, m3);
-						var m4 = _v18.a;
-						var c4 = _v18.b;
-						return _Utils_Tuple2(
-							m4,
-							$elm$core$Platform$Cmd$batch(
-								_List_fromArray(
-									[c1, c2, c3, c4])));
-					default:
-						var newIdx = step.a;
-						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{lastPiecePosition: model.piecePosition, piecePosition: newIdx}),
-							$elm$core$Platform$Cmd$none);
-				}
-			case 'SetGameOnHold':
-				var hold = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{gameOnHold: hold}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMsgBoxText':
-				var _v19 = msg.a;
-				var l1 = _v19.a;
-				var l2 = _v19.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{msgBoxLine1: l1, msgBoxLine2: l2}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMsgBoxImageContent':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{msgBoxImageContent: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetPieceImageContent':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{pieceImageContent: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMsgBoxLossContent':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{msgBoxLossContent: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMareName':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{mareName: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMsgBoxWinContent':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{msgBoxWinImageContent: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMessageBoxWinText':
-				var c = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{msgBoxWinText: c}),
-					$elm$core$Platform$Cmd$none);
-			case 'SetMareCombined':
-				var _v20 = msg.a;
-				var _v21 = _v20.a;
-				var mare = _v21.a;
-				var piece = _v21.b;
-				var _v22 = _v20.b;
-				var winImg = _v22.a;
-				var winText = _v22.b;
-				var _v23 = A2(
-					$author$project$Main$update,
-					$author$project$Main$SetMareName(mare),
-					model);
-				var m1 = _v23.a;
-				var c1 = _v23.b;
-				var _v24 = A2(
-					$author$project$Main$update,
-					$author$project$Main$SetPieceImageContent(piece),
-					m1);
-				var m2 = _v24.a;
-				var c2 = _v24.b;
-				var _v25 = A2(
-					$author$project$Main$update,
-					$author$project$Main$SetMsgBoxWinContent(winImg),
-					m2);
-				var m3 = _v25.a;
-				var c3 = _v25.b;
-				var _v26 = A2(
-					$author$project$Main$update,
-					$author$project$Main$SetMessageBoxWinText(winText),
-					m3);
-				var m4 = _v26.a;
-				var c4 = _v26.b;
-				return _Utils_Tuple2(
-					m4,
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[c1, c2, c3, c4])));
-			case 'IncreaseMareCaptureCount':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{mareCaptureCount: model.mareCaptureCount + 1}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{mareLossCount: model.mareLossCount + 1}),
-					$elm$core$Platform$Cmd$none);
+									[c1, c2])));
+					} else {
+						var $temp$msg = $author$project$Main$ResetBoard,
+							$temp$model = model;
+						msg = $temp$msg;
+						model = $temp$model;
+						continue update;
+					}
+			}
 		}
 	});
 var $author$project$Main$initialModel = function (_v0) {
@@ -7052,6 +7075,7 @@ var $author$project$Main$initialModel = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Main$RerollBoard = {$: 'RerollBoard'};
 var $author$project$Main$Clicked = function (a) {
 	return {$: 'Clicked', a: a};
 };
@@ -7285,7 +7309,7 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Main$ResetBoard),
+						$elm$html$Html$Events$onClick($author$project$Main$RerollBoard),
 						$elm$html$Html$Attributes$class('button')
 					]),
 				_List_fromArray(
