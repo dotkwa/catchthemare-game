@@ -1,7 +1,7 @@
 # Catch the Mare
 Catch the Mare is a recreation of an old minigame called Chat Noir, but with mares.
 
-[Live version here (click).](https://maresonmyface.github.io/catchthemare/)
+[Live version here (click).](https://dotkwa.github.io/catchthemare-game/)
 
 ## Build/Modify
 1. Install elm (I used elm 0.19.1)
